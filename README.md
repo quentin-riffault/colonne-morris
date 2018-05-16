@@ -22,8 +22,8 @@ Placer au dessus de la carte
 ### Arduino Mega 2:
 #### Motor Shield
 - Placer au dessus de la carte
-- Le ventilateur en A
-- Le bulleur en B
+- Le bulleur en A
+- Le ventilateur en B
 
 ### Communication serial
 - RX1 à TX1
