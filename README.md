@@ -1,8 +1,8 @@
 # Colonne Morris
-## Components
+## Composants
 - 2 Arduino MEGA
 - Shield Ethernet
-- capteur de CO2 SEN0159
+- Capteur de CO2 SEN0159
 - Capteur de particules DSM051A
 - Shield moteur
 - Ventilateur 12V DC
@@ -25,6 +25,6 @@ Placer au dessus de la carte
 - Le ventilateur en A
 - Le bulleur en B
 
-### Serial communication
+### Communication serial
 - RX1 à TX1
 - TX1 à RX1

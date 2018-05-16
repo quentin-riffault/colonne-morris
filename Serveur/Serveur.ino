@@ -10,7 +10,6 @@
 	int pm_amount = -1;
 	float temperature = -1;
 	bool comp_state[3] = {true, true, true};
-	short vitesse = 250;
 
 /*========================Webserver========================*/
 	#include <SPI.h>
@@ -293,10 +292,10 @@
 		}
 	void update_temperature()
 		{    
-			  if (getTemperature(&temperature, true) != READ_OK) {
-			    return;
-			}
+		  if (getTemperature(&temperature, true) != READ_OK) {
+		    return;
 		}
+}
 void setup()
 {
 
