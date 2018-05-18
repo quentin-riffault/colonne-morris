@@ -1,7 +1,6 @@
 /*
 *
 *	Attention:  utiliser un éditeur type Sublime Text pour visionner ce code par parties
-*	
 *
 */
 
@@ -10,8 +9,9 @@
 	int pm_amount = -1;
 	float temperature = -1;
 	bool comp_state[3] = {true, true, true};
+	short vitesse = 255;
 
-/*========================Webserver========================*/
+/*======================= Webserver =======================*/
 	#include <SPI.h>
 	#include <Ethernet.h>
 
@@ -40,11 +40,11 @@
 		      client.println(",");
 
 		      client.print("\t\"temp\":");
-		      client.print("26");
+		      client.print(temperature);
 		      client.println(",");
 
 		      client.print("\t\"speed\":");
-		      client.print("250");
+		      client.print(vitesse);
 		      client.println(",");
 
 		      client.print("\t\"time\":");
@@ -93,17 +93,14 @@
 		    else if (strcmp (param, "b") == 0){
 		        Serial.println (F("Signal de Bulleur"));
 		        comp_state[0] = !comp_state[0];
-		        ack();
 		    }
 		    else if (strcmp (param, "v") == 0){
 		        Serial.println (F("Signal de Ventilateur"));
 		        comp_state[1] = !comp_state[1];
-		        ack();
 		    }
 		    else if (strcmp (param, "l") == 0){
 		        Serial.println (F("Signal de LED"));
 		        comp_state[1] = !comp_state[1];
-		        ack();
 		    }
 		    else if (param[0] = 'm') {
 		        Serial.println (F("Signal de vitesse Moteur!"));
@@ -167,7 +164,7 @@
 		        client.stop();
 		    }  // end of got a new client
 		}
-/*===========================CO2===========================*/
+/*========================== CO2 ==========================*/
 	#define         MG_PIN                       (A0)
 	#define         BOOL_PIN                     (2)
 	#define         DC_GAIN                      (8.5)
@@ -215,7 +212,7 @@
 		    }
 		    delay(500);
 		}
-/*============================µP===========================*/
+/*=========================== µP ==========================*/
 	byte bff[2];
 	int DSM501A_pin = 39;//DSM501A input D39
 	unsigned long duration;
@@ -241,9 +238,10 @@
 
 		  pm_amount = concentration;
 		}
-/*=======================Température=======================*/
+/*====================== Température ======================*/
 	#include <OneWire.h>
 	const byte BROCHE_ONEWIRE = 7;
+    OneWire ds(BROCHE_ONEWIRE);
 
 	enum DS18B20_RCODES 
 			{
@@ -292,14 +290,29 @@
 		}
 	void update_temperature()
 		{    
-		  if (getTemperature(&temperature, true) != READ_OK) {
-		    return;
+			  if (getTemperature(&temperature, true) != READ_OK) return;
 		}
-}
+/*======================== Moteurs ========================*/
+	void update_motors()
+		{
+			if (comp_state[0] == true)
+			{
+				Serial1.write(255);
+			}else{
+				Serial1.write(0);
+			}
+
+			if(comp_state[1] == true){
+				Serial1.write(vitesse);
+			}else{
+				Serial1.write(0);
+			}
+		}
 void setup()
 {
 
   Serial.begin(9600);
+  Serial1.begin(9600);
   while (!Serial) { }
 
   Ethernet.begin(mac, ip);
@@ -316,13 +329,17 @@ void setup()
 }
 
 void update(){
-	//update_motors();
+	update_motors();
 	update_CO2();
 	update_pm();
-	//update_temperature();
+	update_temperature();
 }
 
 void loop(){
+        delay(3000);
+        vitesse = 0;
 	update();
 	serverProcess();
+        delay(3000);
+        vitesse = 255;
 }
