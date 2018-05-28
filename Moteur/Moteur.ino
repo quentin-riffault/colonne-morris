@@ -1,17 +1,18 @@
 /*
 *
-*	Attention:  utiliser un éditeur type Sublime Text pour visionner ce code par parties	
+*	Attention:  utiliser un éditeur type Sublime Text pour visionner ce code par parties
+*	
 *
 */
 unsigned int bulleur_dir = 12,
              bulleur_brake = 9,
-             bulleur_speed = 255,
+             bulleur_speed = 0,
              
              ventilateur_dir = 13,
              ventilateur_brake = 8,
-             ventilateur_speed = 255;
+             ventilateur_speed = 0;
              
-int incomingByte = 0;
+             short count = 0;
 
 void setup(){
 	pinMode(bulleur_dir, OUTPUT);
@@ -30,26 +31,31 @@ void setup(){
 	Serial1.begin(9600);
 }
 
-bool p = false;
+void update_motors(){
+if(Serial1.available() > 0){
+  int c = Serial1.read();
+  
+  if(c == '$'){
+    count = 1;
+    Serial.print("$");
+    
+  }else if(c == ','){
+    Serial.print(',');
+  }else if(c == '#'){
+    count = 0;
+    Serial.print("#");
+    
+  }
+    
+}
 
+	analogWrite(3, bulleur_speed);
+	analogWrite(11, ventilateur_speed);
+
+}
 
 void loop(){
-		if(Serial1.available() > 0)
-		{
-		  incomingByte = Serial1.read();
-                  Serial.println();
-                  if (!p){
-                    Serial.print("Changing bubbler speed to ");
-                    Serial.write(incomingByte);
-                    bulleur_speed = incomingByte;
-                  }else{
-                    Serial.print("Changing fan speed to ");
-                    Serial.write(incomingByte);
-                     ventilateur_speed = incomingByte;
-                    }
-                  p = !p;
-		}
 
-		analogWrite(3, bulleur_speed);
-		analogWrite(11, ventilateur_speed);
+	update_motors();
+
 }

@@ -1,6 +1,7 @@
 /*
 *
 *	Attention:  utiliser un éditeur type Sublime Text pour visionner ce code par parties
+*	
 *
 */
 
@@ -9,9 +10,10 @@
 	int pm_amount = -1;
 	float temperature = -1;
 	bool comp_state[3] = {true, true, true};
-	short vitesse = 255;
+        short vent_speed = 255;
 
-/*======================= Webserver =======================*/
+
+/*========================Webserver========================*/
 	#include <SPI.h>
 	#include <Ethernet.h>
 
@@ -40,11 +42,11 @@
 		      client.println(",");
 
 		      client.print("\t\"temp\":");
-		      client.print(temperature);
+		      client.print("26");
 		      client.println(",");
 
 		      client.print("\t\"speed\":");
-		      client.print(vitesse);
+		      client.print("250");
 		      client.println(",");
 
 		      client.print("\t\"time\":");
@@ -104,13 +106,11 @@
 		    }
 		    else if (param[0] = 'm') {
 		        Serial.println (F("Signal de vitesse Moteur!"));
-                         short n[3];
-                         int c = strlen(param);
-                         int cp = c;
-                        for(c; c > 1; c--){
-                          n[c-2] = (int)param[c]-48;
-                          Serial.print(n[c-2]);
-                        }
+                        vent_speed = (param[2]-48)*100;
+                        vent_speed += (param[3]-48)*10;
+                        vent_speed += (param[4]-48);
+                        Serial.print("\n\n\n\t\t");
+                        Serial.print(vent_speed);
 		    } // Fin moteur
 		    else Serial.println(param);
 		}  // end of processGet
@@ -164,7 +164,7 @@
 		        client.stop();
 		    }  // end of got a new client
 		}
-/*========================== CO2 ==========================*/
+/*===========================CO2===========================*/
 	#define         MG_PIN                       (A0)
 	#define         BOOL_PIN                     (2)
 	#define         DC_GAIN                      (8.5)
@@ -212,7 +212,7 @@
 		    }
 		    delay(500);
 		}
-/*=========================== µP ==========================*/
+/*============================µP===========================*/
 	byte bff[2];
 	int DSM501A_pin = 39;//DSM501A input D39
 	unsigned long duration;
@@ -238,10 +238,10 @@
 
 		  pm_amount = concentration;
 		}
-/*====================== Température ======================*/
+/*=======================Température=======================*/
 	#include <OneWire.h>
 	const byte BROCHE_ONEWIRE = 7;
-    OneWire ds(BROCHE_ONEWIRE);
+        OneWire ds(7);
 
 	enum DS18B20_RCODES 
 			{
@@ -290,30 +290,42 @@
 		}
 	void update_temperature()
 		{    
-			  if (getTemperature(&temperature, true) != READ_OK) return;
+		  if (getTemperature(&temperature, true) != READ_OK) {
+		    return;
 		}
-/*======================== Moteurs ========================*/
-	void update_motors()
-		{
-			if (comp_state[0] == true)
-			{
-				Serial1.write(255);
-			}else{
-				Serial1.write(0);
-			}
+}
 
-			if(comp_state[1] == true){
-				Serial1.write(vitesse);
-			}else{
-				Serial1.write(0);
-			}
-		}
+void update_motors(){
+  Serial1.print("$");
+  if(comp_state[0]){ // Si le bulleur est "on"
+     Serial1.print(255);
+     Serial.print("\tBULLEUR = ");
+     Serial.print(255);
+  }else{
+     Serial1.print(0);
+     Serial.print("\tBULLEUR = ");
+     Serial.print(0);
+    }
+    
+    Serial1.print(",");
+    
+  if(comp_state[1]){
+      Serial1.print(vent_speed);
+      Serial.print("\tVENT = ");
+      Serial.print(vent_speed);
+    }else{
+      Serial1.print(0);
+     Serial.print("\tVENT");
+     Serial.print(0);
+      }
+      
+     Serial1.print("#");
+}
 void setup()
 {
-
-  Serial.begin(9600);
   Serial1.begin(9600);
-  while (!Serial) { }
+  Serial.begin(9600);
+  while (!Serial && !Serial1) { }
 
   Ethernet.begin(mac, ip);
   server.begin();
@@ -336,10 +348,6 @@ void update(){
 }
 
 void loop(){
-        delay(3000);
-        vitesse = 0;
 	update();
 	serverProcess();
-        delay(3000);
-        vitesse = 255;
 }

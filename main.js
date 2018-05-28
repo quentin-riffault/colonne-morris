@@ -14,11 +14,20 @@ $(".chkbox").click(function(){
 })
 
 $("#send_button").click(function(){
+	var speed = $("#speed").val();
+	if(speed < 100 && speed > 10){
+		speed = "0"+speed;
+	}else if(speed < 10){
+		speed="00"+speed;
+	}
+	
+	console.log(speed);
+	
 	$.ajax({
 		url: "http://192.168.0.143:4200",
 		timeout: 3000,
 		type: "GET",
-		data: `m=${$("#speed").val()}`,
+		data: `m=${speed}`,
 		succes: function(){
 			console.log(`Sent ${$("#speed").val}`)
 		}

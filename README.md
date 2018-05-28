@@ -4,7 +4,6 @@
 - Shield Ethernet
 - Capteur de CO2 SEN0159
 - Capteur de particules DSM051A
-- Capteur de température
 - Shield moteur
 - Ventilateur 12V DC
 - Bulleur 12V DC
@@ -18,12 +17,8 @@ Placer au dessus de la carte
 - Brancher le fil de données en A0
 
 #### DSM051A
-- Brancher au 5V/GND
-- Brancher le fil de données sur D39
-
-#### Capteur de température
-- Brancher au 5V/GND
-- Brancher le fil de données sur la broche OneWire (D7)
+-
+-
 ### Arduino Mega 2:
 #### Motor Shield
 - Placer au dessus de la carte
