@@ -4,6 +4,9 @@
 *	
 *
 */
+
+String buffer = ""
+
 unsigned int bulleur_dir = 12,
              bulleur_brake = 9,
              bulleur_speed = 0,
@@ -31,27 +34,22 @@ void setup(){
 	Serial1.begin(9600);
 }
 
-void update_motors(){
-if(Serial1.available() > 0){
-  int c = Serial1.read();
-  
-  if(c == '$'){
-    count = 1;
-    Serial.print("$");
-    
-  }else if(c == ','){
-    Serial.print(',');
-  }else if(c == '#'){
-    count = 0;
-    Serial.print("#");
-    
-  }
-    
+void parse(){
+	bulleur_speed = (buffer[0]-48) ? 255:0;
+	ventilateur_speed = (buffer[1]-48)*100;
+	ventilateur_speed += (buffer[2]-48)*10;
+	ventilateur_speed += buffer[3]-48;
+	buffer = "";
 }
 
-	analogWrite(3, bulleur_speed);
-	analogWrite(11, ventilateur_speed);
-
+void update_motors(){
+    if(Serial1.available() > 0){
+		buffer += Serial1.read();
+	}else if(buffer != "" && Serial1.available() == 0){
+		parse();
+		analogWrite(3, bulleur_speed);
+		analogWrite(11, ventilateur_speed);
+	}
 }
 
 void loop(){
