@@ -298,7 +298,7 @@
 void update_motors(){
   Serial1.print("$");
   if(comp_state[0]){ // Si le bulleur est "on"
-     Serial1.print(255);
+     Serial1.print(1);
      Serial.print("\tBULLEUR = ");
      Serial.print(255);
   }else{
