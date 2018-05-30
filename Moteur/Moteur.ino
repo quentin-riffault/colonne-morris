@@ -6,6 +6,7 @@
 */
 
 String buf = "";
+short state = 0;
 
 unsigned int bulleur_dir = 12,
              bulleur_brake = 9,
@@ -33,19 +34,44 @@ void setup(){
 }
 
 void parse(){
-      Serial.print("Received: ");
-      Serial.println(buf);
+      if(state == 1){
+          state++;
+          Serial.print("Bulleur: ");
+          bulleur_speed = buf.toInt();
+          Serial.println(bulleur_speed);
+        }else if(state == 2){
+          Serial.print("Ventilateur: ");
+          ventilateur_speed = buf.toInt();
+          Serial.println(ventilateur_speed);
+          }
       buf = "";
 }
 
 void update_motors(){
-    if(Serial1.available() > 0){
-		buf += Serial1.read();
-	}else if(buf != ""){
-		parse(); 
-		analogWrite(3, bulleur_speed);
-		analogWrite(11, ventilateur_speed);
-	}
+  if(!state){
+      Serial.println("Waiting for connection");
+      state = 503;
+    }
+    
+  if(Serial1.available() > 0){
+      buf = Serial1.read();
+      //Serial.print("Received: ");
+      //Serial.println(buf);
+            
+      if(buf == "36"){
+          Serial.println("Incoming TX");
+          state = 1;
+       }else if(buf == "35"){
+          Serial.println("End of TX");
+          state = 0;
+        }
+     
+      if(state >= 1 && buf != "36"){
+          parse();
+      }
+
+
+    }
 }
 
 void loop(){

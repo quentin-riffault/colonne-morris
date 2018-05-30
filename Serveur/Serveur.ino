@@ -90,22 +90,19 @@
 
         if (strcmp (param, "s") == 0) {
             Serial.println (F("Envoyer le json!"));
-            sendJSON();
+            //sendJSON();
         }
         else if (strcmp (param, "b") == 0){
             Serial.println (F("Signal de Bulleur"));
             comp_state[0] = !comp_state[0];
-           sendJSON();
         }
         else if (strcmp (param, "v") == 0){
             Serial.println (F("Signal de Ventilateur"));
             comp_state[1] = !comp_state[1];
-           sendJSON();
         }
         else if (strcmp (param, "l") == 0){
             Serial.println (F("Signal de LED"));
             comp_state[2] = !comp_state[2];
-           sendJSON();
         }
         else if (param[0] = 'm') {
             Serial.println (F("Signal de vitesse Moteur!"));
@@ -114,9 +111,9 @@
                         vent_speed += (param[4]-48);
                         Serial.print("\n\n\n\t\t");
                         Serial.print(vent_speed);
-                        sendJSON();
         } 
-        else Serial.println(param);
+
+        sendJSON();
     }  
   void processData (const char * data)
     {
@@ -299,16 +296,27 @@
     }
 }
 
-void update_motors(){
-  int b = 255, v = 255;
+void update_motors(){ // Trame: $données#
   Serial.println("Sending: #");
+  Serial1.print("$");
+  Serial.print("Sending: ");
+  if(comp_state[0]){
+      Serial1.write(255);
+      Serial.print(255);
+    }else{
+      Serial1.write(0);
+      Serial.write(0);  
+    }
+  Serial.print("Sending: ");
+  if(comp_state[1]){
+      Serial.println(vent_speed);
+      Serial1.write(vent_speed);    
+    }else{
+      Serial.println(0);
+      Serial1.write(0);  
+    }
+  Serial.println("Sending: $");
   Serial1.print("#");
-  Serial.print("Sending: ");
-  Serial.println(b);
-  Serial1.write(b);
-  Serial.print("Sending: ");
-  Serial.println(v);
-  Serial1.write(v);
 }
 void setup()
 {
