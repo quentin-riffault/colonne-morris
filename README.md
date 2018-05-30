@@ -17,8 +17,9 @@ Placer au dessus de la carte
 - Brancher le fil de données en A0
 
 #### DSM051A
--
--
+- Brancher au 5V/GND
+- Brancher le fil de données sur D39
+
 ### Arduino Mega 2:
 #### Motor Shield
 - Placer au dessus de la carte
@@ -26,5 +27,15 @@ Placer au dessus de la carte
 - Le ventilateur en B
 
 ### Communication serial
-- RX1 à TX1
-- TX1 à RX1
+- Relier les GND des arduino
+- Relier le TX1 du serveur au RX1 de l'arduino moteur
+
+## Problèmes de communication par ethernet
+- Désactiver le proxy sur le navigateur si la connexion locale ne s'effectue pas correctement
+
+## Librairies utilisées
+- Materialize
+- JQuery
+- OneWire
+
+

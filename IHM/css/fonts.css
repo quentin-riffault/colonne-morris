@@ -1,0 +1,11 @@
+@font-face{
+	font-family: 'Lato';
+	font-style: normal;
+	font-weight: 400;
+	src: url("../fonts/Lato.ttf") format('ttf');
+}
+
+*{
+	font-family: Lato, 'Open Sans';
+	font-display: swap;
+}
