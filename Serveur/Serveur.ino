@@ -173,7 +173,7 @@
   #define         READ_SAMPLE_INTERVAL         (50)
   #define         READ_SAMPLE_TIMES            (5)
 
-  #define         ZERO_POINT_VOLTAGE           (0.330)
+  #define         ZERO_POINT_VOLTAGE           (0.3220)
   #define         REACTION_VOLTGAE             (0.030)
 
   float           CO2Curve[3]  =  {2.602,ZERO_POINT_VOLTAGE,(REACTION_VOLTGAE/(2.602-3))};

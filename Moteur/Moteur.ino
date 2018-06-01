@@ -54,7 +54,7 @@ void update_motors(){
     }
     
   if(Serial1.available() > 0){
-      buf = Serial1.read();
+      buf += Serial1.read();
       //Serial.print("Received: ");
       //Serial.println(buf);
             
@@ -69,9 +69,15 @@ void update_motors(){
       if(state >= 1 && buf != "36"){
           parse();
       }
+      
+      buf="";
 
 
     }
+    
+    analogWrite(11, ventilateur_speed);
+    analogWrite(3, bulleur_speed);
+    
 }
 
 void loop(){

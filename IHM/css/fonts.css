@@ -5,7 +5,7 @@
 	src: url("../fonts/Lato.ttf") format('ttf');
 }
 
-*{
+body{
 	font-family: Lato, 'Open Sans';
 	font-display: swap;
 }

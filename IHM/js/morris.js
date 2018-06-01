@@ -1,5 +1,5 @@
 var x = 0;
-var int = 3000;
+var int = 5000;
 $(".chkbox").click(function(){
 	console.log(`${$(this).attr("id")} = ${$(this).prop("checked")}`);
 	$.ajax({
@@ -25,7 +25,6 @@ $("#send_button").click(function(){
 	
 	$.ajax({
 		url: "http://192.168.0.143:4200",
-		timeout: 3000,
 		type: "GET",
 		data: `m=${speed}`,
 		succes: function(){
@@ -55,7 +54,6 @@ function formatTime(ms){
 setInterval(function getJSON() {
     $.ajax({
         url: "http://192.168.0.143:4200", //Requête d'actualisation au serveur
-        timeout: 3000,
         type:"GET",
         data:"s",
         success: function(data) {
